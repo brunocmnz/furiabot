@@ -378,7 +378,6 @@ function wait(ms) {
 }
 
 
-
 bot.onText(/\/help/, (msg) => {
   const chatId = msg.chat.id;
 
