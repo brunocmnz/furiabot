@@ -62,9 +62,10 @@ function menuVoltar(chatId, mensagem, data) {
 
 // ===== FUNÇÃO INICIAL /START =====
 bot.onText(/\/start/, (msg) => {
-  const textoAjuda = `🤖 <b>Digite /help para ver os comandos do Bot.</b>`;
-  bot.sendMessage(chatId, textoAjuda, { parse_mode: "HTML" });
   const chatId = msg.chat.id;
+  const textoAjuda = `🤖 <b>Digite /help para ver os comandos do Bot.</b>`;
+  
+  bot.sendMessage(chatId, textoAjuda, { parse_mode: "HTML" });
   estadoUsuario.delete(chatId); // reseta qualquer estado anterior
   menuPrincipal(chatId);
 });
