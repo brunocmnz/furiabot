@@ -62,6 +62,8 @@ function menuVoltar(chatId, mensagem, data) {
 
 // ===== FUNÇÃO INICIAL /START =====
 bot.onText(/\/start/, (msg) => {
+  const textoAjuda = `🤖 <b>Digite /help para ver os comandos do Bot.</b>`;
+  bot.sendMessage(chatId, textoAjuda, { parse_mode: "HTML" });
   const chatId = msg.chat.id;
   estadoUsuario.delete(chatId); // reseta qualquer estado anterior
   menuPrincipal(chatId);
@@ -385,7 +387,7 @@ bot.onText(/\/help/, (msg) => {
 
 Aqui estão os comandos que você pode usar:
 
-/hi — Abre o <b>menu principal</b> com as opções do bot.
+/start — Abre o <b>menu principal</b> com as opções do bot.
 /torcida — Inicia o <b>modo torcida</b>, onde você simula uma conversa com outro torcedor da FURIA.
 /help — Mostra esta mensagem de ajuda com os comandos disponíveis.
 
