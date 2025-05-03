@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^5.1.0",
     "node-fetch": "^3.3.2",
     "node-telegram-bot-api": "^0.66.0",
     "prompt-sync": "^4.2.0"
