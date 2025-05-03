@@ -269,8 +269,40 @@ const respostasPorPalavra = {
   ],
 };
 
+const reacoes = {
+  // Reacoes do torcedor
+  animado: [
+    "🔥 Essa energia aí sim, torcedor! CONTINUA! A FURIA sente você vibrando!",
+    "🐆 Que vibe boa! Assim que a FURIA gosta: torcida ligada no 220!",
+    "💥 Essa empolgação aí vale mais que grito de torcida! Vamo com tudo!",
+    "🏁 Bora transformar essa animação em vitória! Foco e fé, torcedor!",
+    "🚀 Sua animação impulsiona a FURIA rumo ao topo!",
+  ],
+  desanimado: [
+    "🖤 Calma, torcedor. A FURIA sempre levanta mais forte. Isso aqui não acabou!",
+    "🙌 Desanimar é normal... mas aqui é FURIA! Levanta a cabeça e bora torcer juntos!",
+    "⚔️ Grandes vitórias nascem dos momentos difíceis. Segura firme!",
+    "🌪️ Até o vento vira a favor quando a FURIA ruge! Não desiste agora!",
+    "🐾 Já viu pantera fugir de desafio? Então bora junto nessa!",
+  ],
+  nervoso: [
+    "😬 Jogo tenso, né? Mas é aqui que a FURIA cresce!",
+    "🧠 Calma, respira... a FURIA treina pra esses momentos!",
+    "📢 É nervoso aí, é pressão aqui... mas confia no time!",
+    "💢 A tensão é o tempero da vitória. A FURIA vai responder!",
+    "🔥 Segura no rugido e confia! Cada segundo pode virar tudo!",
+  ],
+  medo: [
+    "😨 Tá com medo? Relaxa, a FURIA já enfrentou monstros maiores!",
+    "🛡️ Medo não vence jogo. Confiança sim! E a FURIA tá pronta!",
+    "💪 Torcedor, seu apoio é força! Medo nenhum apaga esse rugido!",
+    "🌙 Até no escuro a pantera enxerga. A FURIA sabe o caminho!",
+    "🎯 Medo existe, mas a FURIA tem mira certeira: é vitória no alvo!",
+  ],
+};
+
 // Funcao que busca uma resposta no modo Torcida
-function buscarResposta(tipo, chatId) {
+function buscarResposta(tipo, conjunto, chatId) {
   const aliases = {
     vencemos: "vitoria",
     ganhamos: "vitoria",
@@ -279,7 +311,7 @@ function buscarResposta(tipo, chatId) {
     perdemos: "derrota",
   };
   const chave = aliases[tipo] || tipo;
-  const respostas = respostasPorPalavra[chave];
+  const respostas = conjunto[chave];
 
   console.log(respostas);
   if (respostas) {
@@ -691,6 +723,37 @@ bot.on("message", async (msg) => {
   // ============================
   // 1. Modo torcida ativo
   if (modoTorcidaAtivo.has(chatId)) {
+    let imprimir = {
+      animado: false,
+      desanimado: false,
+      nervoso: false,
+      medo: false,
+    };
+
+    for (const palavraAt of palavrasUsuario) {
+      for (const [categoria, termos] of Object.entries(reacoes)) {
+        if (categoria === palavraAt) {
+          imprimir[categoria] = true;
+        }
+      }
+    }
+
+    if (imprimir.animado) {
+      buscarResposta("animado", reacoes, chatId);
+    }
+    
+    if (imprimir.desanimado) {
+      buscarResposta("desanimado", reacoes, chatId);
+    }
+    
+    if (imprimir.nervoso) {
+      buscarResposta("nervoso", reacoes, chatId);
+    }
+    
+    if (imprimir.medo) {
+      buscarResposta("medo", reacoes, chatId);
+    }
+
     let doBreak = false;
     for (const palavraUsuario of palavrasUsuario) {
       doBreak = buscarResposta(palavraUsuario, chatId);
@@ -711,7 +774,6 @@ bot.on("message", async (msg) => {
       ultimoPlacar = placarIn;
       console.log(placarIn);
       console.log(placar);
-      const tipo1 = classificarResultado(placar.placar1, placar.placar2);
       let tipo = null;
       let respostas = null;
       if (placarIn.placar1 > placar.furia) {
@@ -891,11 +953,6 @@ function extrairPlacar(texto) {
     else return { placar2, placar1 };
   }
   return null;
-}
-
-function classificarResultado(p1, p2) {
-  if (p1 === p2) return "empate";
-  return p1 > p2 ? "vantagem" : "desvantagem";
 }
 
 function calcularSimilaridade(a, b) {
@@ -1086,6 +1143,6 @@ function iniciarModoTorcida(chatId) {
   modoTorcidaAtivo.set(chatId, true);
   bot.sendMessage(
     chatId,
-    "🐆 FURIOSO ATIVADO!\nPode mandar sua mensagem! 🔥\nPara voltar ao Menu Principal, digite /voltar."
+    "Fala comigo FURIOSO! 🐆\nAnimado para o jogo de hoje? 🔥 \nPara voltar ao Menu Principal, digite /voltar."
   );
 }
