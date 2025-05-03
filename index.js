@@ -760,7 +760,7 @@ bot.on("message", async (msg) => {
 
     let doBreak = false;
     for (const palavraUsuario of palavrasUsuario) {
-      doBreak = buscarResposta(palavraUsuario, chatId);
+      doBreak = buscarResposta(palavraUsuario, respostasPorPalavra, chatId);
       if (doBreak) {
         break;
       }
@@ -822,9 +822,13 @@ bot.on("message", async (msg) => {
         // return;
       }
       if (tipo != null) {
-        placar.furia = placarIn.placar1;
-        placar.adversario = placarIn.placar2;
-        buscarResposta(tipo, chatId);
+        if(placarIn.placar1 > placar.furia){
+          placar.furia = placarIn.placar1;
+        }
+        if(placarIn.placar2 > placar.adversario){
+          placar.adversario = placarIn.placar2;
+        }
+        buscarResposta(tipo, respostasPorPalavra, chatId);
         console.log(tipo);
         return;
       }
