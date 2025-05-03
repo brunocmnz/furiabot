@@ -8,7 +8,7 @@ const token = "7944328720:AAGUDBk6wKpFMNchE2W82ZuBFYiwfVXJLjk";
 
 // const bot = new TelegramBot(token, { polling: true });
 const bot = new TelegramBot(token);
-bot.setWebHook(`${process.env.URL || 'https://SEU-DOMINIO-DO-RENDER.onrender.com'}/bot${token}`);
+bot.setWebHook(`${process.env.URL || 'https://furiabot-w84e.onrender.com'}/bot${token}`);
 
 
 const estadoUsuario = new Map();
