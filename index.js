@@ -280,6 +280,19 @@ const estadoUsuario = new Map();
 
 const modoTorcidaAtivo = new Map(); // key: chatId → value: histórico de conversa
 const modoInformativoAtivo = new Map(); // key: chatId → value: histórico de conversa
+const modoCalendarioAtivo = new Map(); // key: chatId → value: histórico de conversa
+
+function desativarModoTorcida(chatId) {
+  modoTorcidaAtivo.delete(chatId);
+}
+
+function desativarModoInformativo(chatId) {
+  modoInformativoAtivo.delete(chatId);
+}
+
+function desativarModoCalendario(chatId) {
+  modoCalendarioAtivo.delete(chatId);
+}
 
 const fetch = global.fetch;
 const API_KEY = "AIzaSyCXAv21x0jSp_YTnQCl1lbBm8yQfiuUjZ8";
@@ -292,10 +305,10 @@ function menuPrincipal(chatId) {
     {
       reply_markup: {
         inline_keyboard: [
-          [{ text: "Modo Torcida 🎉", callback_data: "modo_torcida_api" }],
+          [{ text: "Modo Torcida 🎉", callback_data: "modo_torcida" }],
           [{ text: "Modo Informativo ℹ️ ", callback_data: "modo_informativo" }],
-          [{ text: "Consultar partidas 📅", callback_data: "opcao_b" }],
-          [{ text: "Help de comandos 🆘", callback_data: "help" }],
+          [{ text: "Modo Calendário 📅", callback_data: "consultar_partidas" }],
+          [{ text: "Lista de comandos 🆘", callback_data: "ajuda" }],
           [{ text: "Loja da FURIA 🛍", url: "https://www.furia.gg/" }],
         ],
       },
@@ -303,192 +316,10 @@ function menuPrincipal(chatId) {
   );
 }
 
-// ===== SUBMENU DE OPÇÃO B =====
-function menuOpcaoB(chatId) {
-  bot.sendMessage(chatId, "Deseja pesquisar partidas por:", {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: "📅 Próximos 7 dias", callback_data: "pesquisar_data" }],
-        [{ text: "🗓️ Período de datas", callback_data: "pesquisar_periodo" }],
-        [{ text: "⬅️ Voltar ao Menu Principal", callback_data: "voltar_menu" }],
-      ],
-    },
-  });
-}
-
-function menuVoltar(chatId, mensagem, data) {
-  bot.sendMessage(chatId, mensagem, {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: "⬅️ Voltar ao menu anterior", callback_data: data }],
-      ],
-    },
-  });
-}
-
-// ===== FUNÇÃO INICIAL /START =====
-bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-  menuPrincipal(chatId);
-  const textoAjuda = `🤖 <b>Digite /help para ver os comandos do Bot a qualquer momento.</b>`;
-
-  bot.sendMessage(chatId, textoAjuda, { parse_mode: "HTML" });
-  estadoUsuario.delete(chatId); // reseta qualquer estado anterior
-});
-
-const definicaoTorcidaIA = [
-  {
-    role: "user",
-    parts: [
-      {
-        text: `
-        Aja como um torcedor fanático da FURIA respondendo com empolgação, gírias e energia. Sempre que conversar, utilize frases curtas e expressivas, com uma frase por linha. Use emojis para expressar emoção, mas sem exageros.
-
-🟢 **Início da Conversa**
-- Nunca comece falando de placar ou pontuação.
-- Inicie perguntando como está o ânimo do torcedor, como por exemplo: "E aí, tá confiante hoje?" ou "Tá no clima da vitória?".
-
-⚠️ **Interpretação de Placar**
-- Sempre que o usuário disser algo como "1x0" ou "1-0", considere que o placar é favorável à FURIA, a menos que o usuário complemente com "pra eles", "deles" ou algo semelhante. 
-  - Exemplo: "1-0" → ponto da FURIA (comemore!)
-  - Exemplo: "1-0 pra eles" → ponto do adversário (lamente)
-
-- Se o usuário disser "1-1", "empatou", ou "agora tá igual" depois de algo como "1-0 pra eles", considere que a FURIA marcou o ponto de empate e comemore esse empate com entusiasmo.
-  - **Mas não chame isso de virada**! Ainda é apenas um empate.
-
-🟢 **Comemorações e Lamentos**
-- Comemore todo ponto da FURIA com empolgação (🔥🐆💥).
-- Lamente com esportividade quando for ponto do adversário.
-
-🚫 **Viradas**
-- Só diga que foi uma virada quando:
-  - A FURIA estava atrás no placar (ex: 0-1) e **depois passou a ficar à frente** (ex: 2-1, 3-2, etc.).
-  - Empate (ex: 1-1) **não é virada**. Só mencione virada quando houver mudança real de desvantagem para vantagem.
-
-⚠️ **Contexto**
-- Não use palavras como "gol" ou "gool", pois o jogo pode ser CSGO, LoL, futebol ou outro. Comemore de forma genérica.
-- Se perguntarem qual jogo está acontecendo, diga algo fictício como “FURIA x TITAS no CSGO” ou “FURIA enfrentando os FALCÕES”.
-
-👊 Nunca deixe a conversa morna! Incentive, provoque reações, pergunte sobre o jogo e celebre os momentos.
-
-Exemplos:
-- “VAMOOO FURIAAAA 🔥🔥 Tá demais hoje, bora buscar mais um ponto!!”
-- “Empatou? Aí sim! 🐆🔥 Bora virar essa parada agora!”
-- “1-0 pra eles? Calma, a gente vai virar!!! 💥🐆”
-
-⚠️ IMPORTANTE: Ao interpretar um empate como "1-1", "empatou" ou "tá igual":
-- Verifique quem estava vencendo antes.
-- Se antes a FURIA estava ganhando (ex: "1-0"), então o empate é ponto do adversário → lamente chateado.
-- Se antes o adversário estava ganhando (ex: "1-0 pra eles"), então o empate é ponto da FURIA → comemore.
-- Se não houver contexto anterior claro, responda de forma neutra, incentivando a torcida.
-- "AEEE" so deve ser usado para comemorar
-- se recebeu algo como 1-0 não comemore com algo como "mais um", e sim algo como "Isso aii!!! Vamo pra cima! Vai
-
-* comemoracoes
-- AEEEE
-- BOAAAA
-- VAMOOOOOO
-- É ISSO AIII!!!
-
-* LAMENTACOES
-- POXA
-- AH NÃO!
-- NÃO ACREDITO!
-- REAGE FURIAA!
-
-Mantenha sempre o espírito de torcida vibrante da FURIA! e não use palavrões
-
-        `,
-        // text: `
-        // Aja como um torcedor fanático da FURIA respondendo empolgado. Use emojis, gírias e energia. Caso receba um cumprimento, cumprimente de volta de forma esportiva e animada!
-        // Não deixe a conversa ficar morna, sempre impulsione, pergunte de placar, chame com gritos animados e/ou canticos de torcida!
-        // Lembre que o contexto é esports, evite de mandar mensagem muito grande.
-        // Caso perguntar algo sobre qual jogo esta acontecendo, invente algo ou diga algo como FURIA x TITAS, FURIA x FALCAO, FURIA x AGUIA, jogo de CSGO.
-        // Não fique perguntando de placar, pois o bot é você.
-
-        // Fale uma frase por linha.
-        // Ao dizer 1x0 ou 1-0, considere como ponto nosso caso o usuário não diga nada.
-        // Se o usuário disser 'pra eles', então considere que a pontuação maior é do adversário.
-        // Se depois disso ele disser '1-1', 'empatou' ou 'agora tá igual', isso é ponto da FURIA.
-        // Sempre que for ponto da FURIA, comemore! Se for do adversário, lamente com esportividade.
-        // Se não tiver certeza, seja neutro mas mantenha o ânimo da torcida.,
-        // nao inicie a conversa com assunto placar na primeira mensagem, mas inicie perguntando como esta o animo do torcedor, algo assim
-        // não diga algo sobre gool, apenas comemore de forma independente de tipo de jogo, já que pode ser qualquer um, como csgo, futebol, lol, etc
-        // só considere virada quando houver placar desigual, sem ser com mesmo numero de pontos
-        // `
-      },
-    ],
-  },
-];
-
-const textoAjuda = `
-🤖 <b>Ajuda do Bot da FURIA</b>
-
-Aqui estão os comandos que você pode usar:
-
-/start — Abre o <b>menu principal</b> com as opções do bot.
-/torcida — Inicia o <b>modo torcida</b>, onde você conversa com o FURIOSO, o bot torcedor da FURIA.
-/help — Mostra esta mensagem de ajuda com os comandos disponíveis.
-/info - Abre modo informativo, sendo possível obter informações sobre a história da FURIA, jogadores, patrocinadores, etc.
-/voltar - Exibir o Menu Principal.
-
-Em breve teremos ainda mais funcionalidades! 🐆🔥
-`;
-
-// Função para consultar a API do Gemini
-async function consultarGemini(input) {
-  console.log("Vou consultar o GEMINI");
-  const mensagem = `Com base em: ${instrucaoGemini} , dado isso responda; ${input}`;
-  const resposta = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: mensagem }],
-          },
-        ],
-      }),
-    }
-  );
-
-  const json = await resposta.json();
-  return json?.candidates?.[0]?.content?.parts?.[0]?.text || "❌ Sem resposta.";
-}
-
-async function conversarComTorcedorFuria(mensagem) {
-  historicoTorcida.push({ role: "user", parts: [{ text: mensagem }] });
-
-  try {
-    const resposta = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: historicoTorcida }),
-      }
-    );
-
-    const json = await resposta.json();
-
-    if (json.candidates && json.candidates.length > 0) {
-      const texto = json.candidates[0].content.parts[0].text;
-      historicoTorcida.push({ role: "model", parts: [{ text: texto }] });
-      return texto;
-    } else {
-      console.error(
-        "Resposta inesperada da API:",
-        JSON.stringify(json, null, 2)
-      );
-      return "❌ Erro na resposta da IA.";
-    }
-  } catch (error) {
-    console.error("Erro na requisição:", error.message);
-    return "❌ Erro ao conectar com a IA.";
-  }
+function setaModoInfoDesativaOutros(chatId){
+  modoInformativoAtivo.set(chatId, true);
+  desativarModoCalendario(chatId);
+  desativarModoTorcida(chatId);
 }
 
 // ===== CALLBACK DOS BOTÕES =====
@@ -496,33 +327,26 @@ bot.on("callback_query", (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
 
-  if (data === "modo_torcida_api") {
-    modoTorcidaAtivo.set(
-      chatId,
-      JSON.parse(JSON.stringify(definicaoTorcidaIA))
-    );
-
-    bot.sendMessage(
-      chatId,
-      "🐆 FURIOSO ATIVADO!\nPode mandar sua mensagem! Para voltar ao menu, digite /voltar."
-    );
-  }
-
-  if (data === "help") {
-    bot.sendMessage(chatId, textoAjuda, { parse_mode: "HTML" });
+  if (data === "modo_torcida") {
+    reiniciaPlacar();
+    iniciarModoTorcida(chatId); // ✅ usa a função unificada
   }
 
   if (data === "modo_informativo") {
-    modoInformativoAtivo.set(
-      chatId,
-      true
-      // JSON.parse(JSON.stringify(instrucaoGemini))
-    );
+    setaModoInfoDesativaOutros(chatId);
     bot.sendMessage(
       chatId,
       "🐆 Modo Info ATIVADO!ℹ️ \nPode mandar sua mensagem, sendo possível obter informações sobre a história da FURIA, jogadores, patrocinadores, etc.\n Para voltar ao Menu Principal, digite /voltar."
     );
     // consultarGemini(input);
+  }
+
+  if (data === "consultar_partidas") {
+    menuConsultarPartidas(chatId);
+  }
+
+  if (data === "ajuda") {
+    bot.sendMessage(chatId, textoAjuda, { parse_mode: "HTML" });
   }
 
   if (data === "voltar_menu") {
@@ -563,6 +387,82 @@ bot.on("callback_query", (query) => {
   bot.answerCallbackQuery(query.id);
 });
 
+// ===== SUBMENU DE OPÇÃO B =====
+function menuConsultarPartidas(chatId) {
+  desativarModoInformativo(chatId);
+  desativarModoTorcida(chatId);
+  modoCalendarioAtivo.set(chatId, true);
+  bot.sendMessage(chatId, "Deseja pesquisar partidas por:", {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "📅 Próximos 7 dias", callback_data: "pesquisar_data" }],
+        [{ text: "🗓️ Período de datas", callback_data: "pesquisar_periodo" }],
+        [{ text: "⬅️ Voltar ao Menu Principal", callback_data: "voltar_menu" }],
+      ],
+    },
+  });
+}
+
+function menuVoltar(chatId, mensagem, data) {
+  bot.sendMessage(chatId, mensagem, {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "⬅️ Voltar ao menu anterior", callback_data: data }],
+      ],
+    },
+  });
+}
+
+// ===== FUNÇÃO INICIAL /START =====
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  menuPrincipal(chatId);
+  const textoAjuda = `🤖 <b>Digite /ajuda para ver os comandos do Bot a qualquer momento.</b>`;
+
+  bot.sendMessage(chatId, textoAjuda, { parse_mode: "HTML" });
+  estadoUsuario.delete(chatId); // reseta qualquer estado anterior
+});
+
+// Texto exibido no /ajuda
+const textoAjuda = `
+🤖 <b>Ajuda do Bot da FURIA</b>
+
+Aqui estão os comandos que você pode usar:
+
+/start — Abre o <b>menu principal</b> com as opções do bot.
+/torcida — Inicia o <b>modo torcida</b>, onde você conversa com o FURIOSO, o bot torcedor da FURIA.
+/calendario - Exibe o modo calendário, onde é possível pesquisar as partidas dos próximos 7 dias ou de um  período específico.
+/info - Abre modo informativo, sendo possível obter informações sobre a história da FURIA, jogadores, patrocinadores, etc.
+/ajuda — Mostra esta mensagem de ajuda com os comandos disponíveis.
+/voltar - Exibir o Menu Principal.
+
+Em breve teremos ainda mais funcionalidades! 🐆🔥
+`;
+
+// Função para consultar a API do Gemini
+async function consultarGemini(input) {
+  console.log("Vou consultar o GEMINI");
+  const mensagem = `Com base nos dados: ${instrucaoGemini} , dado isso responda; ${input} de forma o mais detalhada possível, mas apenas com base nos dados, sem inventarn nada, no lugar de ** para negrito, substitua **negrito** em tags b html como <b>negrito</b>`;
+  const resposta = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: mensagem }],
+          },
+        ],
+      }),
+    }
+  );
+
+  const json = await resposta.json();
+  return json?.candidates?.[0]?.content?.parts?.[0]?.text || "❌ Sem resposta.";
+}
+
 bot.onText(/\/voltar/, (msg) => {
   const chatId = msg.chat.id;
   modoTorcidaAtivo.delete(chatId); // desativa o modo torcida com IA
@@ -570,43 +470,19 @@ bot.onText(/\/voltar/, (msg) => {
   menuPrincipal(chatId);
 });
 
-async function conversarComTorcedorFuria(mensagem) {
-  historicoTorcida.push({ role: "user", parts: [{ text: mensagem }] });
-
-  try {
-    const resposta = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: historicoTorcida }),
-      }
-    );
-
-    const json = await resposta.json();
-
-    if (json.candidates && json.candidates.length > 0) {
-      const texto = json.candidates[0].content.parts[0].text;
-      historicoTorcida.push({ role: "model", parts: [{ text: texto }] });
-      return texto;
-    } else {
-      console.error(
-        "Resposta inesperada da API:",
-        JSON.stringify(json, null, 2)
-      );
-      return "❌ Erro na resposta da IA.";
-    }
-  } catch (error) {
-    console.error("Erro na requisição:", error.message);
-    return "❌ Erro ao conectar com a IA.";
-  }
-}
-
+// Variavel que armazena o valor dos pontos (score)
 let placar = {
   adversario: 0,
   furia: 0,
 };
 
+// Variavel que armazena o placara anterior (score)
+let ultimoPlacar = {
+  adversario: 0,
+  furia: 0,
+};
+
+// Array que armazena as possiveis respostas do modo Torcida
 const respostasPorPalavra = {
   empate: [
     "🐆 Ficou no empate... Mas a FURIA continua!",
@@ -647,18 +523,14 @@ const respostasPorPalavra = {
     "🧨 Tá pegando fogo! Hora de pontuar de novo!",
   ],
   furiaEmpatou: [
-    `🧠 *placar* Placar igual? Foco total!!`,
-    // "😮‍💨 Empatou?! Agora é hora de virar! 🐆",
-    // "💢 Tá tudo igual... Mas não por muito tempo!",
-    // "😮‍💨 Empatou?! Agora é hora de virar!! Vamo FURIA! 🐆",
-    // "🐆 VAMOOO FURIA! Placar igual? Foco total!! 🔥",
-    // "💪 Foco e raça! A vitória é nossa! 🐆🔥",
-    // "🐆 EMPATOU! Agora é pegar o embalo!",
-    // "🔥 Empatamos! Agora é virar!! Bora FURIA!",
-    // "😤 Tudo igual! Bora pra cima, FURIA!🐆🔥",
-    // "👊 É isso!! Agora a pressão é neles!🐆🔥",
-    // "🧠 Jogada certeira pra empatar! Vamo FURIA!🐆🔥",
-    // "🚀 Igualamos! Agora ninguém segura a FURIA!🐆🔥",
+    "🧠 *placar* Placar igual? Foco total!!",
+    "😮‍💨 *placar* E vamos! Agora ninguém segura a FURIA!🐆🔥",
+    "🐆 EMPATOU! Agora é pegar o embalo e virar!!",
+    "🔥 Empatamos! Agora é no ritmo da virada!",
+    "😤 Tudo igual! Bora pra cima, FURIA!🔥",
+    "👊 *placar* É isso!! Pressão total neles agora!",
+    "🚀 Igualamos! A próxima é nossa!",
+    "🧨 Empatamos, mas o jogo é nosso! VAMOO!",
   ],
   pontoRumoVirada: [
     "⚡ MAIS UM! RUMO À VIRADA!",
@@ -689,80 +561,37 @@ const respostasPorPalavra = {
   ],
 };
 
+// Funcao que busca uma resposta no modo Torcida
 function buscarResposta(tipo, chatId) {
-  respostas = respostasPorPalavra[tipo];
+  const aliases = {
+    vencemos: "vitoria",
+    ganhamos: "vitoria",
+    empatamos: "empate",
+    empatou: "empate",
+    perdemos: "derrota",
+  };
+  const chave = aliases[tipo] || tipo;
+  const respostas = respostasPorPalavra[chave];
 
   console.log(respostas);
   if (respostas) {
-    let aleatoria = respostas[Math.floor(Math.random() * respostas.length)];
-    if (aleatoria.includes("*placar*")) {
+    let respAleat = respostas[Math.floor(Math.random() * respostas.length)];
+    if (respAleat.includes("*placar*")) {
       console.log("A frase contém *placar*");
-      const plac = `${placar.furia} x ${placar.adversario}`;
-      aleatoria = aleatoria.replace("*placar*", plac);
+      const placarStr = `${placar.furia} x ${placar.adversario}`;
+      respAleat = respAleat.replace("*placar*", placarStr);
     }
     console.log("RESPOSTAS");
-    console.log(aleatoria);
-    aleatoria = substituirVariaveis(aleatoria, placar);
-    bot.sendMessage(chatId, aleatoria);
+    console.log(respAleat);
+    bot.sendMessage(chatId, respAleat);
+    return true;
   }
 }
-
-function substituirVariaveis(template, dados) {
-  if (typeof template !== "string") {
-    console.error("template não é uma string:", template);
-    return "";
-  }
-
-  return template.replace(/\$\{(.*?)\}/g, (_, chave) => {
-    return dados[chave.trim()] ?? "";
-  });
-}
-
-let ultimoPlacar = "";
-
-const novoJogo = ["novo jogo", "novo jogo"];
 
 // ===== RESPOSTAS DE TEXTO =====
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const texto = msg.text.toLowerCase();
-
-  // if (respostas != null) {
-  //   respostas = respostasPorPalavra[tipo];
-  // }
-  // respostas = respostasPorPalavra[tipo];
-  // console.log(respostas)
-  // if (respostas) {
-  //   console.log("RESPOSTAS")
-  //   let aleatoria = respostas[Math.floor(Math.random() * respostas.length)];
-  //   console.log(aleatoria[0][0]);
-  //   aleatoria = substituirVariaveis(aleatoria[0], placar);
-  //   bot.sendMessage(chatId, aleatoria);
-  // }
-  // }
-  // if (respostasPorPalavra[tipo]) {
-  //   const respostas = respostasPorPalavra[tipo];
-  //   const aleatoria = respostas[Math.floor(Math.random() * respostas.length)];
-  //   bot.sendMessage(chatId, aleatoria);
-  // } else {
-  //   bot.sendMessage(
-  //     chatId,
-  //     "Recebi um placar, mas não entendi quem venceu. 🤔"
-  //   );
-  //   return;
-  // }
-
-  // for (const palavraUsuario of palavrasUsuario) {
-  //   for (const palavraChave in respostasPorPalavra) {
-  //     if (calcularSimilaridade(palavraUsuario, palavraChave) >= 0.8) {
-  //       const respostas = respostasPorPalavra[palavraChave];
-  //       const aleatoria =
-  //         respostas[Math.floor(Math.random() * respostas.length)];
-  //       bot.sendMessage(chatId, aleatoria);
-  //       return;
-  //     }
-  //   }
-  // }
 
   // Se nenhuma palavra-chave foi encontrada
   // bot.sendMessage(chatId, "Não entendi muito bem... pode repetir?");
@@ -770,45 +599,38 @@ bot.on("message", async (msg) => {
   // Ignora comandos que começam com /
   if (texto.startsWith("/")) return;
 
+  // ============================
   // 1. Modo Info ativo
   if (modoInformativoAtivo.has(chatId)) {
     const historico = modoInformativoAtivo.get(chatId);
     if (historico) {
       console.log("MODO INFO ATIVO");
       const resposta = await consultarGemini(texto);
-      bot.sendMessage(chatId, `ℹ️ ${resposta}`);
+      bot.sendMessage(chatId, `ℹ️ ${resposta}`, { parse_mode: "HTML" });
       // bot.sendMessage(chatId, resposta, { parse_mode: "Markdown" });
     }
     return;
   }
 
+  // ============================
   // 1. Modo torcida ativo
   if (modoTorcidaAtivo.has(chatId)) {
     const palavrasUsuario = texto.split(/\s+/);
 
+    let doBreak = false;
+    for (const palavraUsuario of palavrasUsuario) {
+      doBreak = buscarResposta(palavraUsuario, chatId);
+      if (doBreak) {
+        break;
+      }
+    }
+
     const placarIn = extrairPlacar(texto);
     console.log("TEXTO: ", texto);
-    /*
-  empate
-  derrota
-  vitoria
-
-  adversarioEmpatou
-  furiaEmpatou
-
-  pontoRumoVirada
-  ponto
-  
-  pontoAdv
-  */
-    novoJogo.forEach((frase) => {
-      if (texto.includes(frase)) {
-        console.log("NOVO JOGO");
-        placar.furia = 0;
-        placar.adversario = 0;
-      }
-    });
-
+    /*  empate      derrota      vitoria
+        adversarioEmpatou     furiaEmpatou
+        pontoRumoVirada     ponto
+        pontoAdv  */
     const hist = modoTorcidaAtivo.get(chatId);
     if (hist && placarIn) {
       console.log("MODO TORCIDA ATIVO");
@@ -844,7 +666,7 @@ bot.on("message", async (msg) => {
         placar.furia == placarIn.placar1 &&
         placar.adversario == placarIn.placar2
       ) {
-        const emj = placar.furia > placar.adversario ? "😎" : "😢";
+        const emj = placar.furia > placar.adversario ? "😎" : "👀";
         console.log("EMOJI: ", emj);
         bot.sendMessage(chatId, `Sim, tô sabendo! ${emj}`);
         // return;
@@ -854,8 +676,9 @@ bot.on("message", async (msg) => {
       ) {
         bot.sendMessage(
           chatId,
-          `🤔 Esse placar está incoerente! Antes estava ${placar.furia} x ${placar.adversario}`
+          `🤔 Esse placar está incoerente! Antes estava ${placar.furia} x ${placar.adversario}\nSe estiver falando de um novo jogo, clique em /torcida.`
         );
+        tipo = null;
         // return;
       }
       if (tipo != null) {
@@ -885,6 +708,7 @@ bot.on("message", async (msg) => {
     // return;
   }
 
+  // ============================
   // 2. Lógica para datas
   const estado = estadoUsuario.get(chatId);
   if (!estado) return;
@@ -894,7 +718,7 @@ bot.on("message", async (msg) => {
     menuVoltar(
       chatId,
       `❌ Data inválida. Envie no formato válido (Ex: 25/05/2025).`,
-      "opcao_b"
+      "consultar_partidas"
     );
     return;
   }
@@ -939,7 +763,7 @@ bot.on("message", async (msg) => {
   }
 });
 
-bot.onText(/\/help/, (msg) => {
+bot.onText(/\/ajuda/, (msg) => {
   const chatId = msg.chat.id;
 
   bot.sendMessage(chatId, textoAjuda, { parse_mode: "HTML" });
@@ -947,15 +771,22 @@ bot.onText(/\/help/, (msg) => {
 
 bot.onText(/\/info/, (msg) => {
   const chatId = msg.chat.id;
-  modoInformativoAtivo.set(
-    chatId,
-    true
-    //  JSON.parse(JSON.stringify(instrucaoGemini))
-  );
+  setaModoInfoDesativaOutros(chatId);
   bot.sendMessage(
     chatId,
     "🐆 Modo Info ATIVADO!ℹ️ \nPode mandar sua mensagem, sendo possível obter informações sobre a história da FURIA, jogadores, patrocinadores, etc.\n Para voltar ao Menu Principal, digite /voltar."
   );
+});
+
+bot.onText(/\/torcida/, (msg) => {
+  reiniciaPlacar();
+  const chatId = msg.chat.id;
+  iniciarModoTorcida(chatId); // ✅ usa a mesma função
+});
+
+bot.onText(/\/calendario/, (msg) => {
+  const chatId = msg.chat.id;
+  menuConsultarPartidas(chatId);
 });
 
 // ==== FUNCOES PRATICAS SEM SER DO TELEGRAM =======
@@ -964,6 +795,11 @@ bot.onText(/\/info/, (msg) => {
 // =================================================
 // =================================================
 // =================================================
+function reiniciaPlacar() {
+  placar.furia = 0;
+  placar.adversario = 0;
+}
+
 function extrairPlacar(texto) {
   const regex = /(\d+)\s*[ xXaA-]\s*(\d+)/;
   const match = texto.match(regex);
@@ -1086,7 +922,7 @@ function retornarJogos(dataInicio, dataFim, chatId, mensagem) {
       bot.sendMessage(chatId, mensagem.trim(), { parse_mode: "HTML" });
     })
     .then(() => {
-      menuOpcaoB(chatId);
+      menuConsultarPartidas(chatId);
     })
     .catch((err) => {
       console.error("Erro ao buscar jogos:", err.message);
@@ -1162,30 +998,16 @@ function formatarParaDiaMesAno(dataString) {
   return `${dia}/${mes}/${ano}`;
 }
 
-bot.onText(/\/torcida/, (msg) => {
-  const chatId = msg.chat.id;
-  iniciarModoTorcida(chatId); // ✅ usa a mesma função
-});
-
 function iniciarModoTorcida(chatId) {
+  desativarModoCalendario(chatId);
+  desativarModoInformativo(chatId);
   // Faz uma cópia do array de definição
-  modoTorcidaAtivo.set(chatId, JSON.parse(JSON.stringify(definicaoTorcidaIA)));
-
+  modoTorcidaAtivo.set(chatId, true);
   bot.sendMessage(
     chatId,
-    "🐆 FURIOSO ATIVADO!\nPode mandar sua mensagem! Para voltar ao Menu Principal, digite /voltar."
+    "🐆 FURIOSO ATIVADO!\nPode mandar sua mensagem! 🔥\nPara voltar ao Menu Principal, digite /voltar."
   );
 }
-
-bot.on("callback_query", async (query) => {
-  const chatId = query.message.chat.id;
-  const data = query.data;
-
-  if (data === "modo_torcida") {
-    iniciarModoTorcida(chatId); // ✅ usa a função unificada
-  }
-  bot.answerCallbackQuery(query.id);
-});
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
