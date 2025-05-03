@@ -308,13 +308,15 @@ function menuPrincipal(chatId) {
           [{ text: "Modo Torcida 🎉", callback_data: "modo_torcida" }],
           [{ text: "Modo Informativo ℹ️ ", callback_data: "modo_informativo" }],
           [{ text: "Modo Calendário 📅", callback_data: "consultar_partidas" }],
-          [{ text: "Lista de comandos 🆘", callback_data: "ajuda" }],
+          [{ text: "Lista de comandos 📲", callback_data: "ajuda" }],
           [{ text: "Loja da FURIA 🛍", url: "https://www.furia.gg/" }],
         ],
       },
     }
   );
 }
+
+
 
 function setaModoInfoDesativaOutros(chatId){
   modoInformativoAtivo.set(chatId, true);
