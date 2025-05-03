@@ -5,7 +5,11 @@ const { text } = require("stream/consumers");
 // Substitua pelo seu token do BotFather
 const token = "7944328720:AAGUDBk6wKpFMNchE2W82ZuBFYiwfVXJLjk";
 
-const bot = new TelegramBot(token, { polling: true });
+
+// const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token);
+bot.setWebHook(`${process.env.URL || 'https://SEU-DOMINIO-DO-RENDER.onrender.com'}/bot${token}`);
+
 
 const estadoUsuario = new Map();
 
@@ -1129,3 +1133,21 @@ function iniciarModoTorcida(chatId) {
     "Fala comigo FURIOSO! 🐆\nAnimado para o jogo de hoje? 🔥 \nPara voltar ao Menu Principal, digite /voltar."
   );
 }
+
+
+
+
+//bot
+const express = require("express");
+const app = express();
+app.use(express.json());
+
+app.post(`/bot${token}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Bot está rodando via webhook na porta ${PORT}`);
+});
