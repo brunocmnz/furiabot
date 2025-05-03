@@ -70,7 +70,6 @@ bot.on("callback_query", (query) => {
       `E aí, Furioso! 🦅 Como você está?\n<b>O que você gostaria de saber sobre a FURIA hoje? \nVamos juntos! </b>💪\nConsigo informar sobre a história da FURIA, nossos patrocinadores, jogadores e suas trajetórias.\n<b>Para voltar ao Menu Principal, digite /voltar.</b>`,
       { parse_mode: "HTML" }
     );
-    // consultarGemini(input);
   }
 
   if (data === "consultar_partidas") {
@@ -566,6 +565,7 @@ function enviarTextoQuebrandoLinha(texto, chatId) {
   });
 }
 
+//Funcao que diz se o valor eh um ano
 function stringEhUmAno(valor) {
   return /^\d{4}$/.test(valor);
 }
@@ -825,23 +825,6 @@ bot.on("message", async (msg) => {
         return;
       }
     }
-
-    //=============================
-    //=============================
-    //=============================
-    // const historico = modoTorcidaAtivo.get(chatId);
-
-    // if (!historico) {
-    //   return bot.sendMessage(chatId, "⚠️ O modo torcida não está ativo.");
-    // }
-
-    // historico.push({ role: "user", parts: [{ text: texto }] });
-
-    // const resposta = await conversarComTorcedorFuria(chatId, texto);
-    // historico.push({ role: "model", parts: [{ text: resposta }] });
-
-    // bot.sendMessage(chatId, `🐆 ${resposta}`);
-    // return;
   }
 
   // ============================
