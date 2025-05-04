@@ -26,7 +26,7 @@ Com ele, é possível acompanhar placares de partidas, interagir com modos exclu
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/furiabot.git
+git clone https://github.com/brunocmnz/furiabot/
 cd furiabot
 ```
 
