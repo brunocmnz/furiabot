@@ -47,8 +47,7 @@ e depois
 node index.js
 ```
 
-
-
+---
 
 ## 🌐 Publicação no Render (Produção)
 
@@ -98,6 +97,8 @@ O bot está online e pronto para uso!
 Caso o bot não responder, mande novamente a mensagem e aguarde alguns segundos.
 Você pode enviar placares, usar botões, interagir com mensagens temáticas e testar os diferentes modos disponíveis.
 
+---
+
 ## 📚 Comandos Disponíveis
 
 | Comando       | Ação                                                                 |
@@ -109,11 +110,15 @@ Você pode enviar placares, usar botões, interagir com mensagens temáticas e t
 | `/calendario` | Abre o modo calendário com partidas próximas                         |
 | `/voltar`     | Volta ao menu principal de qualquer ponto do bot                     |
 
+---
+
 ## 🧱 Organização do Projeto
 
 | Arquivo       | Função                                                              |
 |---------------|---------------------------------------------------------------------|
 | index.js	      | Arquivo principal com lógica e modos do bot                       |
+
+---
 
 ## 🔧 Funções utilitárias:
 - **extrairPlacar():** identifica e interpreta placares nas mensagens
@@ -121,15 +126,21 @@ Você pode enviar placares, usar botões, interagir com mensagens temáticas e t
 - **buscarResposta():** retorna frases temáticas com base em termos e emoções
 - **deveInverterPlacar():** detecta expressões como "pra eles" e inverte o placar
 
+---
+
 ## 🔐 Segurança
 - O token do bot NUNCA deve ser colocado diretamente no código público, pois facilita invadir e alterar o funcionamento do bot.
 - Use process.env para esconder credenciais.
 - No Render, isso é feito na aba "Environment".
 
+---
+
 ## ✅ Observações
 - O bot utiliza Webhook com a porta **10000**, conforme exigido pelo Render.
 - Toda a configuração já está funcional e pública no link acima.
 - Caso deseje adaptar o bot para outro time ou contexto, basta editar os conteúdos em **respostasModoInfo.js**.
+
+---
 
 ## 🧑‍💻 Como Contribuir
 ### 1. Faça um fork do projeto
