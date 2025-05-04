@@ -261,8 +261,6 @@ const respostasPorPalavra = {
     "👊 Boaa! Cada ponto, mais pressão neles!",
   ],
   pontoAdv: [
-    "😠 Eles passaram na frente… bora reagir!",
-    "⚠️ Estamos atrás! Hora de virar!",
     "😓 Não podemos deixar escapar!",
     "🐆 FURIA, foco total agora!",
     "💢 Eles marcaram... mas a resposta vem!",
