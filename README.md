@@ -85,7 +85,7 @@ node index.js
 
 ```js
 const bot = new TelegramBot(token);
-bot.setWebHook(`${process.env.URL || "https://furiabot-w84e.onrender.com"}/bot${token}`);
+bot.setWebHook(`${process.env.URL || "https://seu-bot.onrender.com"}/bot${token}`);
 ```
 
 ### ✅ Bot em Produção
