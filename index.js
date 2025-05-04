@@ -611,9 +611,9 @@ function deveInverterPlacar(palavras, chatId) {
         let tipo = "";
         if (pontosAdv > pontosFuria) {
           tipo = "pontoAdv";
-          bot.sendMessage(chatId, `Desculpe, então o placar é deles..`);
           buscarResposta(tipo, respostasPorPalavra, chatId);
         }
+        bot.sendMessage(chatId, `Desculpe, então o placar é deles..`);
       }
     }
   }
