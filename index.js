@@ -392,7 +392,8 @@ Estamos sempre em busca de novas conquistas e expandindo nossos horizontes! 💪
   },
 
   historia: [
-    `A história da FURIA é incrível e cheia de conquistas! Fundada em 2017 por André Akkari, Jaime Pádua e Cris Guedes em Uberlândia-MG... Se você quiser saber mais detalhes sobre cada ano da nossa trajetória, é só avisar! 😄`,
+    `A história da FURIA é incrível e cheia de conquistas! Fundada em 2017 por André Akkari, Jaime Pádua e Cris Guedes em Uberlândia-MG, a FURIA começou com um sonho: representar o Brasil no cenário competitivo de Counter-Strike. O primeiro time, liderado por Guerri, começou a treinar e logo se destacou em competições. Desde então, a FURIA tem crescido exponencialmente, conquistando prêmios e expandindo para outras modalidades como League of Legends e VALORANT. A pantera, nosso símbolo, representa a garra e a determinação que nos movem! 🐾🔥\n\n
+    Se você quiser saber mais detalhes sobre cada ano da nossa trajetória, é só avisar! 😄`,
   ],
 
   jogadoresResumido: [
