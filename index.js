@@ -581,7 +581,7 @@ function stringEhUmAno(valor) {
 
 const comparacoes = {
   historia: ["história", "trajetória"],
-  detalhado: ["detalhado", "detalhes"],
+  detalhado: ["detalhado", "detalhes", "completa"],
   patrocinadores: ["patrocinadores"],
   jogadores: ["jogadores", "competidores", "equipe", "time", "competição"],
   quando: ["quando"],
