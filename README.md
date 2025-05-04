@@ -89,12 +89,76 @@ const bot = new TelegramBot(token);
 bot.setWebHook(`${process.env.URL || "https://furiabot-w84e.onrender.com"}/bot${token}`);
 ```
 
+### ✅ Bot em Produção
 
+O bot está online e pronto para uso!
 
+📲 **Acesse agora:** **[@furiabrunobot](http://t.me/furiabrunobot)**
 
+Caso o bot não responder, mande novamente a mensagem e aguarde alguns segundos.
+Você pode enviar placares, usar botões, interagir com mensagens temáticas e testar os diferentes modos disponíveis.
 
+## 📚 Comandos Disponíveis
 
+| Comando       | Ação                                                                 |
+|---------------|----------------------------------------------------------------------|
+| `/start`      | Abre o menu principal com botões interativos                         |
+| `/ajuda`      | Lista os comandos disponíveis                                         |
+| `/info`       | Ativa o modo informativo sobre a FURIA                               |
+| `/torcida`    | Ativa o modo torcida (reage a placares e sentimentos)                |
+| `/calendario` | Abre o modo calendário com partidas próximas                         |
+| `/voltar`     | Volta ao menu principal de qualquer ponto do bot                     |
 
+## 🧱 Organização do Projeto
+
+| Arquivo       | Função                                                              |
+|---------------|---------------------------------------------------------------------|
+| index.js	      | Arquivo principal com lógica e modos do bot                       |
+
+## 🔧 Funções utilitárias:
+- **extrairPlacar():** identifica e interpreta placares nas mensagens
+- **extrairDataPadrao():** reconhece datas em diferentes formatos
+- **buscarResposta():** retorna frases temáticas com base em termos e emoções
+- **deveInverterPlacar():** detecta expressões como "pra eles" e inverte o placar
+
+## 🔐 Segurança
+- O token do bot NUNCA deve ser colocado diretamente no código público, pois facilita invadir e alterar o funcionamento do bot.
+- Use process.env para esconder credenciais.
+- No Render, isso é feito na aba "Environment".
+
+## ✅ Observações
+- O bot utiliza Webhook com a porta **10000**, conforme exigido pelo Render.
+- Toda a configuração já está funcional e pública no link acima.
+- Caso deseje adaptar o bot para outro time ou contexto, basta editar os conteúdos em **respostasModoInfo.js**.
+
+## 🧑‍💻 Como Contribuir
+### 1. Faça um fork do projeto
+
+### 2. Crie uma nova branch:
+
+```bash
+Copiar
+Editar
+git checkout -b minha-feature
+```
+
+### 3. Faça commit das suas alterações:
+
+```bash
+Copiar
+Editar
+git commit -m "Minha nova funcionalidade"
+```
+
+### 4. Envie para o GitHub:
+
+```bash
+Copiar
+Editar
+git push origin minha-feature
+```
+
+### 5. Abra um Pull Request
 
 
 
