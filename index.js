@@ -583,7 +583,7 @@ const comparacoes = {
   entrou: ["entrou"],
 };
 
-function deveInverterPlacar(palavras) {
+function deveInverterPlacar(palavras, chatId) {
   const termosInversao = [
     "para eles",
     "pra eles",
@@ -770,7 +770,7 @@ bot.on("message", async (msg) => {
       medo: false,
     };
 
-    deveInverterPlacar(palavrasUsuario);
+    deveInverterPlacar(palavrasUsuario, chatId);
 
     for (const palavraAt of palavrasUsuario) {
       for (const [categoria, termos] of Object.entries(reacoes)) {
