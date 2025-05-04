@@ -5,11 +5,11 @@ const { text } = require("stream/consumers");
 // Substitua pelo seu token do BotFather
 const token = "7944328720:AAGUDBk6wKpFMNchE2W82ZuBFYiwfVXJLjk";
 
-
 // const bot = new TelegramBot(token, { polling: true });
 const bot = new TelegramBot(token);
-bot.setWebHook(`${process.env.URL || 'https://furiabot-w84e.onrender.com'}/bot${token}`);
-
+bot.setWebHook(
+  `${process.env.URL || "https://furiabot-w84e.onrender.com"}/bot${token}`
+);
 
 const estadoUsuario = new Map();
 
@@ -583,6 +583,42 @@ const comparacoes = {
   entrou: ["entrou"],
 };
 
+function deveInverterPlacar(palavras) {
+  const termosInversao = [
+    "para eles",
+    "pra eles",
+    "contra nós",
+    "placar adversário",
+    "placar deles",
+  ];
+
+  // Sliding window de até 4 palavras
+  for (let i = 0; i < palavras.length - 1; i++) {
+    for (const termo of termosInversao) {
+      const palavra1 = palavras[i];
+      const palavra2 = palavras[i + 1];
+
+      const termos = termo.split(/\s+/);
+
+      const simi1 = calcularSimilaridade(palavra1, termos[0]);
+      const simi2 = calcularSimilaridade(palavra2, termos[1]);
+      if (simi1 > 0.8 && simi2 > 0.8) {
+        console.log("INVERTE");
+        const pontosFuria = placar.furia;
+        const pontosAdv = placar.adversario;
+        placar.furia = pontosAdv;
+        placar.adversario = pontosFuria;
+        let tipo = "";
+        if (pontosAdv > pontosFuria) {
+          tipo = "pontoAdv";
+          buscarResposta(tipo, respostasPorPalavra, chatId);
+        }
+      }
+    }
+  }
+  return false;
+}
+
 // ===== RESPOSTAS DE TEXTO =====
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
@@ -734,6 +770,8 @@ bot.on("message", async (msg) => {
       medo: false,
     };
 
+    deveInverterPlacar(palavrasUsuario);
+
     for (const palavraAt of palavrasUsuario) {
       for (const [categoria, termos] of Object.entries(reacoes)) {
         if (categoria === palavraAt) {
@@ -745,15 +783,15 @@ bot.on("message", async (msg) => {
     if (imprimir.animado) {
       buscarResposta("animado", reacoes, chatId);
     }
-    
+
     if (imprimir.desanimado) {
       buscarResposta("desanimado", reacoes, chatId);
     }
-    
+
     if (imprimir.nervoso) {
       buscarResposta("nervoso", reacoes, chatId);
     }
-    
+
     if (imprimir.medo) {
       buscarResposta("medo", reacoes, chatId);
     }
@@ -822,10 +860,10 @@ bot.on("message", async (msg) => {
         // return;
       }
       if (tipo != null) {
-        if(placarIn.placar1 > placar.furia){
+        if (placarIn.placar1 > placar.furia) {
           placar.furia = placarIn.placar1;
         }
-        if(placarIn.placar2 > placar.adversario){
+        if (placarIn.placar2 > placar.adversario) {
           placar.adversario = placarIn.placar2;
         }
         buscarResposta(tipo, respostasPorPalavra, chatId);
@@ -1137,9 +1175,6 @@ function iniciarModoTorcida(chatId) {
     "Fala comigo FURIOSO! 🐆\nAnimado para o jogo de hoje? 🔥 \nPara voltar ao Menu Principal, digite /voltar."
   );
 }
-
-
-
 
 //bot
 const express = require("express");
