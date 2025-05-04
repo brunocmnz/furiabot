@@ -605,7 +605,8 @@ function deveInverterPlacar(palavras, chatId) {
         const pontosFuria = placar.furia;
         const pontosAdv = placar.adversario;
         console.log(`placar[f: ${placar.furia}, adv:${placar.adversario}]`)
-        [placar.furia, placar.adversario] = [placar.adversario, placar.furia];
+        placar.furia = pontosAdv;
+        placar.adversario = pontosFuria;
         console.log(`placar[f: ${placar.furia}, adv:${placar.adversario}]`)
         let tipo = "";
         if (pontosAdv > pontosFuria) {
