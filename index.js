@@ -583,8 +583,8 @@ const comparacoes = {
 
 function deveInverterPlacar(palavras, chatId) {
   const termosInversao = [
-    "para eles",
     "pra eles",
+    "para eles",
     "contra nós",
     "placar adversário",
     "placar deles",
@@ -609,6 +609,7 @@ function deveInverterPlacar(palavras, chatId) {
         let tipo = "";
         if (pontosAdv > pontosFuria) {
           tipo = "pontoAdv";
+          bot.sendMessage(chatId, `Desculpe, então o placar é deles..`);
           buscarResposta(tipo, respostasPorPalavra, chatId);
         }
       }
