@@ -3,7 +3,10 @@ const TelegramBot = require("node-telegram-bot-api");
 const { text } = require("stream/consumers");
 
 // Substitua pelo seu token do BotFather
-const token = "7944328720:AAH9ujzSMCXtNUhPEwiUVPzjvyfh7wpWNYU";
+// const token = "7944328720:AAH9ujzSMCXtNUhPEwiUVPzjvyfh7wpWNYU";
+
+// Use variável de ambiente em vez disso:
+const token = process.env.BOT_TOKEN;
 
 
 // const bot = new TelegramBot(token, { polling: true });
@@ -11,6 +14,8 @@ const bot = new TelegramBot(token);
 bot.setWebHook(
   `${process.env.URL || "https://furiabot-w84e.onrender.com"}/bot${token}`
 );
+
+
 
 const estadoUsuario = new Map();
 
