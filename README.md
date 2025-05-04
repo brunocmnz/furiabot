@@ -79,7 +79,7 @@ node index.js
 | Chave        | Valor                                        |
 |--------------|----------------------------------------------|
 | `BOT_TOKEN`  | Token fornecido pelo BotFather               |
-| `URL`        | `https://furiabot-w84e.onrender.com`         |
+| `URL`        | Endpoint público fornecido pelo Render         |
 
 #### ✅ Exemplo de uso no código:
 
@@ -106,7 +106,7 @@ Você pode enviar placares, usar botões, interagir com mensagens temáticas e t
 | `/start`      | Abre o menu principal com botões interativos                         |
 | `/ajuda`      | Lista os comandos disponíveis                                         |
 | `/info`       | Ativa o modo informativo sobre a FURIA                               |
-| `/torcida`    | Ativa o modo torcida (reage a placares e aos sentimentos "nervoso", "animado", "desanimado" ou "medo".)                |
+| `/torcida`    | Ativa o modo torcida (reage a placares e aos sentimentos "nervoso", "animado", "desanimado" ou "medo")                |
 | `/calendario` | Abre o modo calendário com partidas próximas                         |
 | `/voltar`     | Volta ao menu principal de qualquer ponto do bot                     |
 
