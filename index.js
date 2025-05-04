@@ -1,21 +1,12 @@
-const { Console } = require("console");
 const TelegramBot = require("node-telegram-bot-api");
-const { text } = require("stream/consumers");
 
-// Substitua pelo seu token do BotFather
-// const token = "7944328720:AAH9ujzSMCXtNUhPEwiUVPzjvyfh7wpWNYU";
-
-// Use variável de ambiente em vez disso:
 const token = process.env.BOT_TOKEN;
-
 
 // const bot = new TelegramBot(token, { polling: true });
 const bot = new TelegramBot(token);
 bot.setWebHook(
   `${process.env.URL || "https://furiabot-w84e.onrender.com"}/bot${token}`
 );
-
-
 
 const estadoUsuario = new Map();
 
@@ -36,7 +27,6 @@ function desativarModoCalendario(chatId) {
 }
 
 const fetch = global.fetch;
-const API_KEY = "AIzaSyCXAv21x0jSp_YTnQCl1lbBm8yQfiuUjZ8";
 
 // ===== MENU PRINCIPAL =====
 function menuPrincipal(chatId) {
@@ -189,12 +179,6 @@ bot.onText(/\/voltar/, (msg) => {
 
 // Variavel que armazena o valor dos pontos (score)
 let placar = {
-  adversario: 0,
-  furia: 0,
-};
-
-// Variavel que armazena o placara anterior (score)
-let ultimoPlacar = {
   adversario: 0,
   furia: 0,
 };
