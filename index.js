@@ -613,7 +613,7 @@ function deveInverterPlacar(palavras, chatId) {
           tipo = "pontoAdv";
           buscarResposta(tipo, respostasPorPalavra, chatId);
         }
-        bot.sendMessage(chatId, `Desculpe, então o placar é deles..`);
+        bot.sendMessage(chatId, `Desculpe, então o placar é deles..😥 \nMas não desanima! Vai FURIAA!🐆🔥`);
       }
     }
   }
