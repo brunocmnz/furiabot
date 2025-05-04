@@ -771,8 +771,6 @@ bot.on("message", async (msg) => {
       medo: false,
     };
 
-    deveInverterPlacar(palavrasUsuario, chatId);
-
     for (const palavraAt of palavrasUsuario) {
       for (const [categoria, termos] of Object.entries(reacoes)) {
         if (categoria === palavraAt) {
@@ -811,8 +809,8 @@ bot.on("message", async (msg) => {
         adversarioEmpatou     furiaEmpatou
         pontoRumoVirada     ponto
         pontoAdv  */
-    const hist = modoTorcidaAtivo.get(chatId);
-    if (hist && placarIn) {
+    if (placarIn) {
+      console.log(`placar[${placarIn.placar1} - ${placarIn.placar2}]`)
       console.log("MODO TORCIDA ATIVO");
       ultimoPlacar = placarIn;
       console.log(placarIn);
@@ -871,6 +869,8 @@ bot.on("message", async (msg) => {
         console.log(tipo);
         return;
       }
+    }else{
+      deveInverterPlacar(palavrasUsuario, chatId);
     }
   }
 
